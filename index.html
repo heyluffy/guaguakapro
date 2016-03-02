@@ -1,1 +1,127 @@
-update
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>刮刮卡</title>
+</head>
+<style type="text/css">
+	*{
+
+		padding: 0px;
+		margin: 0px;
+	}
+	.body-title{
+		height: 60px;
+		font-size:30px;
+		line-height: 60px;
+		color: black;
+		text-align: center;
+	}
+	.guagua-box{
+		width: 300px;
+		height: 60px;
+		margin: 0 auto;
+
+	}
+	.guaguaka{
+
+	}
+</style>
+<body>
+<h2 class="body-title">刮刮卡</h2>
+<div class="guagua-box">
+	<canvas id="guaguaka"></canvas>
+</div>
+<script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	var body = document.body;
+	var bodyStyle = document.body.style;
+
+	//css3属性moz-user-select webkit-user-select 禁止在页面上复制
+	bodyStyle.mozUserSelect = "none";
+	bodyStyle.webkitUserSelect = "none";
+
+	//body.addEventListener("touchstart",aaa);
+	function Guaguaka(obj){
+		this.config = {
+			guabox: ".box",
+			canvas: {}
+		}
+		this.config = $.extend(this.config , obj);
+		this.init();
+	}
+	Guaguaka.prototype = {		
+		init: function(){
+			var self = this;
+			self.addEvent();
+			var index = self.getImg();
+			self.loadImg(self.config.img[index], 1, self.canvas);
+		},
+		getImg: function(){
+			var self = this;
+			return Math.floor(Math.random() * self.config.img.length);
+		},
+		/**
+		 * 加载图片
+		 * @param  {[array,string]}
+		 * @param  {[number]} 1表示单张图片img为string 2表示多张图片img为array
+		 * @param  {Function}
+;		 */
+		loadImg: function(img, type, callback){
+			var self = this;
+			if(type == 1){
+				var image = new Image();
+				image.src = img;
+				$(image).on("load", function(){
+					callback.call(self, image);
+				})
+
+			}
+		},
+		canvas: function(image){
+			var self = this;
+			var w = image.width;
+			var h = image.height;
+			self.config.canvas.width = w;
+			self.config.canvas.height = h;
+			self.config.canvas.style.backgroundImage = "url(" + image.src + ")";
+			var ctx = self.config.canvas.getContext("2d");
+			ctx.fillStyle = self.config.bgColor;
+			ctx.fillRect(0, 0, w, h);
+		},
+		addEvent: function(){
+			var self = this;
+			var mousedown = false;
+			$(self.config.canvas).on("mousedown", function(e){
+				e.preventDefault();
+				mousedown = true;
+			})
+			$(self.config.canvas).on("mouseup", function(e){
+				e.preventDefault();
+				mousedown = false;
+			})
+			$(self.config.canvas).on("mousemove", function(e){
+				e.preventDefault();
+				if(mousedown){
+					console.log("mouse",e);
+				}
+			})
+			$(".guagua-box").on("touchmove", function(e){
+				e.preventDefault();
+					console.log("touch",e);
+			})
+		}
+	}
+	var canvas = document.getElementById("guaguaka");
+	var guaguaka = new Guaguaka({
+		guabox: ".guagua-box",
+		canvas: canvas,
+		img: ["images/p_0.jpg","images/p_1.jpg"],
+		bgColor: "gray"
+	})
+
+	
+</script>
+</body>
+</html>
