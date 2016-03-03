@@ -54,6 +54,8 @@
 	Guaguaka.prototype = {		
 		init: function(){
 			var self = this;
+			self.left = $(self.config.canvas).offset().left;
+			self.top = $(self.config.canvas).offset().top;
 			self.addEvent();
 			var index = self.getImg();
 			self.loadImg(self.config.img[index], 1, self.canvas);
@@ -67,7 +69,7 @@
 		 * @param  {[array,string]}
 		 * @param  {[number]} 1表示单张图片img为string 2表示多张图片img为array
 		 * @param  {Function}
-;		 */
+		 */
 		loadImg: function(img, type, callback){
 			var self = this;
 			if(type == 1){
@@ -90,6 +92,29 @@
 			self.ctx.fillStyle = self.config.bgColor;
 			self.ctx.fillRect(0, 0, self.w, self.h);
 		},
+		/**
+		 * 抽奖	
+		 * @param {number} 方法的触发类型 1表示触摸触发 2表示鼠标触发
+		 * @param {object} 事件对象
+		 * @param {boolean} 鼠标触发必须传入该值
+		 */
+		draw: function(type, e, mousedown){
+			var self = this;
+			if(type == 1 || (type == 2 && mousedown)){
+				var origin = e.originalEvent;
+				if(e.originalEvent.touches){
+					origin = e.originalEvent.touches[0]
+				}
+				var x = origin.pageX - self.left;
+				var y = origin.pageY - self.top;
+				with(self.ctx){
+					beginPath();
+					globalCompositeOperation = 'destination-out';
+					arc(x, y, 10, 0, Math.PI * 2);
+					fill();
+				}
+			}
+		},
 		addEvent: function(){
 			var self = this;
 			var mousedown = false;
@@ -102,23 +127,26 @@
 				mousedown = false;
 			})
 			$(self.config.canvas).on("mousemove", function(e){
-				e.preventDefault();				
-				if(mousedown){
-					console.log(e);
-					var x = e.originalEvent.offsetX;
-					var y = e.originalEvent.offsetY;
-				// 	self.ctx.font = "30px Courier New";
-				// 	self.ctx.fillStyle = "blue";
-				// 	self.ctx.fillText(x + "," + y, 60, 60);
-				// 	self.ctx.fillStyle = self.config.bgColor;
-				// 	self.ctx.fillRect(0, 0, self.w, self.h);
-					with(self.ctx){
-						beginPath();
-						globalCompositeOperation = 'destination-out';
-						arc(x, y, 10, 0, Math.PI * 2);
-						fill();
-					}
-				}
+				e.preventDefault();	
+				self.draw(2, e, mousedown);			
+				// if(mousedown){
+				
+				// // 	self.ctx.font = "30px Courier New";
+				// // 	self.ctx.fillStyle = "blue";
+				// // 	self.ctx.fillText(x + "," + y, 60, 60);
+				// // 	self.ctx.fillStyle = self.config.bgColor;
+				// // 	self.ctx.fillRect(0, 0, self.w, self.h);
+				// 	with(self.ctx){
+				// 		beginPath();
+				// 		globalCompositeOperation = 'destination-out';
+				// 		arc(x, y, 10, 0, Math.PI * 2);
+				// 		fill();
+				// 	}
+				// }
+			})
+			$(self.config.canvas).on("touchmove", function(e){
+				e.preventDefault();	
+				self.draw(1, e);			
 			})
 		}
 	}
