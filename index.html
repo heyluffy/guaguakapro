@@ -93,20 +93,20 @@
 		addEvent: function(){
 			var self = this;
 			var mousedown = false;
-			$(self.config.canvas).on("mousedown", function(e){
-				e.preventDefault();
-				mousedown = true;
-			})
-			$(self.config.canvas).on("mouseup", function(e){
-				e.preventDefault();
-				mousedown = false;
-			})
-			$(self.config.canvas).on("mousemove", function(e){
-				e.preventDefault();
-				if(mousedown){
-					console.log("mouse",e);
-				}
-			})
+			// $(self.config.canvas).on("mousedown", function(e){
+			// 	e.preventDefault();
+			// 	mousedown = true;
+			// })
+			// $(self.config.canvas).on("mouseup", function(e){
+			// 	e.preventDefault();
+			// 	mousedown = false;
+			// })
+			// $(self.config.canvas).on("mousemove", function(e){
+			// 	e.preventDefault();
+			// 	if(mousedown){
+			// 		console.log("mouse",e);
+			// 	}
+			// })
 			$(".guagua-box").on("touchmove", function(e){
 				e.preventDefault();
 					console.log("touch",e);
